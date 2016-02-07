@@ -1,0 +1,19 @@
+{
+  "name": "universql-json",
+  "version": "0.1.0",
+  "description": "JSON adapter for UniversQL",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/brandoncarl/universql-js-json.git"
+  },
+  "author": "Brandon Carl (http://www.brandoncarl.com/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/brandoncarl/universql-js-json/issues"
+  },
+  "homepage": "https://github.com/brandoncarl/universql-js-json#readme"
+}
