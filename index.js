@@ -52,12 +52,16 @@ function compile(universalQuery, templater) {
   if (universalQuery.limit)
     query.limit = templater(universalQuery.limit, mapLimit);
 
+  if (universalQuery.table)
+    query.table = templater(universalQuery.table, function(x) { return x; });
+
   return function(context) {
     return {
       filters : (query.filters) ? query.filters(context) : null,
       sort    : (query.sort) ? query.sort(context) : null,
       fields  : (query.fields) ? query.fields(context) : null,
-      limit   : (query.limit) ? query.limit(context) : null
+      limit   : (query.limit) ? query.limit(context) : null,
+      table   : (query.table) ? query.table(context) : null
     };
   };
 
@@ -73,8 +77,11 @@ function compile(universalQuery, templater) {
 
 function run(query, data, next) {
 
-  var chain = _(data),
-      tmp;
+  var chain, tmp;
+
+  // Use specified table (if available)
+  if (query.table) data = data[query.table];
+  chain = _(data);
 
   // Ensure we have an array of data
   if (!Array.isArray(data)) throw new Error("Data must be an array")
