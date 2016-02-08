@@ -199,3 +199,16 @@ function isNumeric(x) {
     return !isNaN(parseFloat(x)) && isFinite(x);
 }
 
+
+function inferType(x) {
+  if ("true" === x)
+    return true;
+  else if ("false" === x)
+    return false;
+  else if (isNumeric(x))
+    return parseFloat(x);
+  else if ("string" === typeof x)
+    return "'" + x + "'";
+  else
+    return x;
+}
