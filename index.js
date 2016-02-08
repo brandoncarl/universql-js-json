@@ -165,7 +165,7 @@ function mapFilters(filters) {
       if ("~" === filter.comparator)
         fn += "var $" + i + "=" + filter.value + ".test($V" + i + ");"
       else
-        fn += "var $" + i + "=($V" + i + (("=" === filter.comparator) ? "==" : filter.comparator) + filter.value + ");";
+        fn += "var $" + i + "=($V" + i + (("=" === filter.comparator) ? "==" : filter.comparator) + inferType(filter.value) + ");";
 
     // Operator
     } else {
