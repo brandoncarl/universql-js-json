@@ -1,6 +1,6 @@
 {
   "name": "universql-json",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "JSON adapter for UniversQL",
   "main": "index.js",
   "scripts": {
