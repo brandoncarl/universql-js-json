@@ -194,3 +194,8 @@ function mapFilters(filters) {
   };
 
 }
+
+function isNumeric(x) {
+    return !isNaN(parseFloat(x)) && isFinite(x);
+}
+
