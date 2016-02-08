@@ -80,7 +80,9 @@ function run(query, data, next) {
   var chain, tmp;
 
   // Use specified table (if available)
-  if (query.table) data = data[query.table];
+  if (query.table && !Array.isArray(data)) data = data[query.table];
+
+  // Create lodash wrapper (unless already created)
   chain = _(data);
 
   // Ensure we have an array of data
