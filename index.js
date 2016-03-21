@@ -52,6 +52,9 @@ function compile(universalQuery, templater) {
   if (universalQuery.limit)
     query.limit = templater(universalQuery.limit, mapLimit);
 
+  if (universalQuery.skip)
+    query.skip = templater(universalQuery.skip, mapSkip);
+
   if (universalQuery.table)
     query.table = templater(universalQuery.table, function(x) { return x; });
 
@@ -61,6 +64,7 @@ function compile(universalQuery, templater) {
       sort    : (query.sort) ? query.sort(context) : null,
       fields  : (query.fields) ? query.fields(context) : null,
       limit   : (query.limit) ? query.limit(context) : null,
+      skip    : (query.skip) ? query.skip(context) : null,
       table   : (query.table) ? query.table(context) : null
     };
   };
@@ -97,8 +101,13 @@ function run(query, data, next) {
   if (query.sort)
     chain = chain.orderBy(query.sort.keys, query.sort.orders);
 
+  // Unlike SQL, we perform limit first, then skip.
+  // By adding skip to limit, we ensure right number of records.
   if (query.limit)
-    chain = (query.limit >= 0) ? chain.take(query.limit) : chain.takeRight(-query.limit);
+    chain = (query.limit >= 0) ? chain.take(query.limit + (query.skip || 0)) : chain.takeRight(-query.limit - (query.skip || 0));
+
+  if (query.skip)
+    chain = (query.limit < 0) ? chain.slice(0, -query.skip) : chain.slice(query.skip);
 
   // Map last! (most processor intensive)
   if (query.fields)
@@ -127,6 +136,11 @@ function mapSorts(sorts) {
 
 function mapLimit(limit) {
   return parseInt(limit);
+}
+
+
+function mapSkip(skip) {
+  return parseInt(skip);
 }
 
 
