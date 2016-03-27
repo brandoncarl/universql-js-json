@@ -178,8 +178,23 @@ function mapFilters(filters) {
 
       if ("~" === filter.comparator)
         fn += "var $" + i + "=" + filter.value + ".test($V" + i + ");"
-      else
-        fn += "var $" + i + "=($V" + i + (("=" === filter.comparator) ? "==" : filter.comparator) + inferType(filter.value) + ");";
+      else {
+        if (null === filter.index || void(0) === filter.index)
+          fn += "var $" + i + "=($V" + i + (("=" === filter.comparator) ? "==" : filter.comparator) + inferType(filter.value) + ");";
+        else {
+          // Check if array contains element. Does not currently support multiple logic statements about arrays or inequality operators
+          if ("*" === filter.index) {
+            if ("=" === filter.comparator || "==" === filter.comparator)
+              fn += "var $" + i + "=(($V" + i + "||[]).indexOf(" + inferType(filter.value) + ") > -1);";
+            else if ("!=" === filter.comparator && "!==" === filter.comparator)
+              fn += "var $" + i + "=(($V" + i + "||[]).indexOf(" + inferType(filter.value) + ") === -1);";
+            else
+              throw new Error(filter.comparator + " not supported for element matches");
+          } else
+            // Check single array element
+            fn += "var $" + i + "=(($V" + i + "||[])[" + filter.index + "]" + (("=" === filter.comparator) ? "==" : filter.comparator) + inferType(filter.value) + ");";
+        }
+      }
 
     // Operator
     } else {
