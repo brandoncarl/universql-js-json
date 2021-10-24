@@ -46,8 +46,8 @@ function compile(universalQuery, templater) {
   if (universalQuery.sort && universalQuery.sort.length)
     query.sort = templater(universalQuery.sort, mapSorts);
 
-  if (universalQuery.fields && universalQuery.fields.length)
-    query.fields = templater(universalQuery.fields, mapFields);
+  if (Object.keys(universalQuery.map).length)
+    query.fields = templater(universalQuery.map, mapFields);
 
   if (universalQuery.limit)
     query.limit = templater(universalQuery.limit, mapLimit);
@@ -145,11 +145,11 @@ function mapSkip(skip) {
 
 
 function mapFields(fields) {
-  var n = fields.length;
   return function(x) {
     var obj = {};
-    for (var i = 0; i < n; i++)
-      _.set(obj, fields[i], _.get(x, fields[i]));
+    for (var key in fields) {
+      _.set(obj, key, _.get(x, fields[key]));
+    }
     return obj;
   }
 }
